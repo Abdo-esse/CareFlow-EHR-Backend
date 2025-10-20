@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -6,51 +7,86 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import 'express-async-errors';
 
 import connectDB from './config/db.js';
 import { connectRedis } from './config/redis.js';
 import { initMinio } from './config/minio.js';
-
 import routes from './routes/index.js';
-import errorMiddleware from './middleware/error.middleware.js';
+import { errorHandler } from './middleware/error.middleware.js';
+import logger from './utils/logger.js';
 
 const app = express();
 
-// === Middlewares globaux ===
-app.use(helmet()); // sécurité headers HTTP
-app.use(cors()); // Cross-Origin Resource Sharing
-app.use(morgan('dev')); // logs des requêtes HTTP
-app.use(express.json()); // body parser JSON
-app.use(express.urlencoded({ extended: true })); // body parser URL-encoded
-app.use(cookieParser()); // gestion cookies
+// === CORS configuration ===
+const corsOptions = {
+  origin:
+    process.env.NODE_ENV === 'production'
+      ? process.env.FRONTEND_URL
+      : process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  exposedHeaders: ['set-cookie'],
+};
 
-// === Routes API versionnée ===
+// === Global middlewares ===
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  })
+);
+app.use(cors(corsOptions));
+app.use(
+  morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev', {
+    stream: {
+      write: (msg) => logger.http(msg.trim()),
+    },
+  })
+);
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// === Health Check ===
+app.options('/api/v1/health', (req, res) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+app.get('/api/v1/health', (req, res) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// === Main API routes ===
 app.use('/api/v1', routes);
 
-// === Middleware de gestion des erreurs ===
-app.use(errorMiddleware);
+// === 404 Handler ===
+app.use((req, res, next) => {
+  res.status(404).json({ success: false, error: 'Route not found' });
+});
 
-// === Démarrage serveur après initialisation services ===
+// === Global Error Middleware ===
+app.use(errorHandler);
+
+// === Start Server ===
 const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
   try {
-    // Connexion à la base de données MongoDB
+    logger.info('Initialisation du serveur CareFlow EHR...');
+
     await connectDB();
+    logger.info('MongoDB connecté avec succès');
 
-    // Connexion à Redis
     await connectRedis();
+    logger.info('Redis connecté avec succès');
 
-    // Initialisation MinIO (bucket)
     await initMinio();
+    logger.info('MinIO initialisé avec succès');
 
-    // Démarrage du serveur Express
     app.listen(PORT, () => {
-      console.log(`🚀 Serveur CareFlow EHR en ligne sur le port ${PORT}`);
+      logger.info(`Serveur opérationnel sur le port ${PORT}`);
     });
   } catch (error) {
-    console.error('❌ Erreur serveur :', error.message);
+    logger.error('Erreur critique au démarrage du serveur :', error);
     process.exit(1);
   }
 };
