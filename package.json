@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Backend RESTful pour CareFlow EHR, un système de gestion de dossiers médicaux électroniques destiné aux cliniques et cabinets. Gère les utilisateurs, patients, rendez-vous, consultations, prescriptions, laboratoires, pharmacies et documents médicaux. Architecture modulaire, sécurisée et extensible, prête pour le cloud et le déploiement professionnel.",
   "main": "src/app.js",
+  "type": "module",
   "directories": {
     "test": "test"
   },

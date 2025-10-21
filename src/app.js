@@ -48,6 +48,7 @@ app.options('/api/v1/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 app.get('/api/v1/health', (req, res) => {
+  logger.error('Health check failed intentionally for testing purposes');
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
