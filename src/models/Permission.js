@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
 
-const PermissionSchema = new mongoose.Schema({
-  name: { type: String, required: true }, // ex: CREATE_PATIENT
-  module: { type: String },               // ex: patient, consultation
-  description: String,
-}, { timestamps: true });
+const permissionSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  description: { type: String },
+});
 
-export default mongoose.model("Permission", PermissionSchema);
+export default mongoose.model("Permission", permissionSchema);
