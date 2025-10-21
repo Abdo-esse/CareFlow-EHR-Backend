@@ -87,16 +87,7 @@ services:
       - minio-data:/data
     networks:
       - careflow-network
-
-  adminer:
-    image: adminer:latest
-    container_name: careflow-adminer
-    restart: always
-    ports:
-      - "8080:8080"
-    networks:
-      - careflow-network
-
+      
 volumes:
   mongo-data:
   minio-data:

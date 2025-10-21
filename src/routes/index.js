@@ -1,4 +1,4 @@
-import expressimport from 'express';
+import express from 'express';
 const router = express.Router();
 // Example route
 router.get('/', (req, res) => {

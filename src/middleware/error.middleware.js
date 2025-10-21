@@ -1,4 +1,4 @@
-import { AppError } from '../core/errors/AppError.js';
+import { AppError } from '../core/AppError.js';
 import logger from '../utils/logger.js';
 
 export default function errorMiddleware(err, req, res, next) {
