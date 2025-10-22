@@ -4,18 +4,23 @@ services:
   api:
     build: .
     container_name: careflow-api
-    restart: always
+    restart: unless-stopped
+    working_dir: /app
     env_file: 
       - .env
+    command: npm run dev       # mode développement avec nodemon
     ports:
-      - "${PORT}:${PORT}"
+      - "${PORT:-3010}:3010"   # fixe un port côté hôte (sinon la variable n’est pas fiable en dev)
     depends_on:
       - mongodb
       - redis
       - minio
+    secrets:
+      - jwt_private.pem
+      - jwt_public.pem
     volumes:
-      - .:/app
-      - /app/node_modules
+      - .:/app                 # synchronise ton code local → conteneur
+      - /app/node_modules      # garde les node_modules internes
     networks:
       - careflow-network
 
@@ -87,6 +92,11 @@ services:
       - minio-data:/data
     networks:
       - careflow-network
+secrets:
+  jwt_private.pem:
+    file: ./secrets/jwt_private.pem
+  jwt_public.pem:
+    file: ./secrets/jwt_public.pem
       
 volumes:
   mongo-data:
