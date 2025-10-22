@@ -1,12 +1,13 @@
-import User from '../models/User.model.js';
+import User from '../models/User.js';
 import { hashPassword } from '../utils/passwordUtils.js';
-import { AppError, BadRequestError, ConflictError } from '../core/AppError.js';
+import { AppError, BadRequestError, ConflictError, NotFoundError } from '../core/AppError.js';
+import Role from '../models/Role.js';
 
 export const getUser = async (id) => {
     try {
         const user = await User.findById(id);
         if (!user) {
-            throw new Error("User not found");
+            throw new NotFoundError("User not found");
         }
         return user;
     } catch (error) {
@@ -24,13 +25,20 @@ export const createUser = async (userData) => {
       throw new ConflictError("Email ou téléphone déjà utilisé.");
     }
     const newUser = new User(userData);
+    if (userData.role){
+        const role = await Role.findOne({ name: userData.role });
+        if (!role) {
+            throw new BadRequestError(`Role ${userData.role} does not exist`);
+        }
+        newUser.roleId = role._id;
+    }
     newUser.password = await hashPassword(userData.password);
 
     await newUser.save();
-
+    // return user with role not roleId
     const userResponse = newUser.toObject();
     delete userResponse.password;
-
+    userResponse.role = userData.role && userData.role;
     return userResponse;
 
   } catch (error) {
@@ -74,5 +82,18 @@ export const getPaginatedUsers = async (page, limit) => {
         };
     } catch (error) {
         throw new Error("Server error");
+    }
+};
+
+export const findUserByEmail = async (email) => {
+    try {
+         const user = await User.findOne({ email });
+         if (!user) {
+            throw new NotFoundError("User not found");
+         }
+         return user;
+    } catch (error) {
+       if (error instanceof AppError) throw error;
+       throw new BadRequestError(error.message);
     }
 };
