@@ -1,4 +1,5 @@
 import { Client } from 'minio';
+import logger from '../utils/logger.js';
 
 const minioClient = new Client({
   endPoint: 'minio', // nom du conteneur docker
@@ -16,12 +17,12 @@ const initMinio = async () => {
 
     if (!exists) {
       await minioClient.makeBucket(bucketName);
-      console.log(`Bucket MinIO créé : ${bucketName}`);
+      logger.info(`Bucket MinIO créé : ${bucketName}`);
     } else {
-      console.log(`Bucket MinIO déjà existant : ${bucketName}`);
+      logger.info(`Bucket MinIO déjà existant : ${bucketName}`);
     }
   } catch (error) {
-    console.error('Erreur MinIO :', error.message);
+    logger.error('Erreur MinIO :', error.message);
   }
 };
 

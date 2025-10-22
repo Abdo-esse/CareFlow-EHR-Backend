@@ -1,4 +1,5 @@
 import { createClient } from 'redis';
+import logger from '../utils/logger.js';
 
 let redisClient;
 
@@ -11,13 +12,13 @@ const connectRedis = async () => {
       },
     });
 
-    redisClient.on('error', (err) => console.error('Erreur Redis :', err));
+    redisClient.on('error', (err) => logger.error('Erreur Redis :', err));
 
     await redisClient.connect();
 
-    console.log('Redis connecté avec succès');
+    logger.info('Redis connecté avec succès');
   } catch (error) {
-    console.error('Erreur de connexion Redis :', error.message);
+    logger.error('Erreur de connexion Redis :', error.message);
   }
 };
 
