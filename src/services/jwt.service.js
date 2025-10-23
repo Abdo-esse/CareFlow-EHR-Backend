@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';  
 import  RefreshToken from '../models/RefreshToken.js';
 import parseDuration from 'parse-duration';
+import { ForbiddenError, NotFoundError } from '../core/AppError.js';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ export const verifyToken = (token) => {
         return null;
     }
 };
+
 export const generateRefreshToken = (user) => {
     if (!user ) {
         throw new Error("Payload invalide pour la génération du refresh token");
@@ -61,10 +63,17 @@ export const generateRefreshToken = (user) => {
     return refreshToken;
 };
 
-export const verifyRefreshToken = (token) => {
+export const verifyRefreshToken = async (token) => {
     try {
+        const storedToken = await RefreshToken.findOne({ token });
+        if (!storedToken) {
+            throw new NotFoundError("Refresh token not found");
+        }
         return jwt.verify(token, JWT_PUBLIC_KEY);
     } catch (error) {
-        return null;
+        if (error.name === 'TokenExpiredError') {
+            throw new NotFoundError("Refresh token expired");
+        }
+        throw new ForbiddenError(`${error.name}: ${error.message}`);
     }
 };

@@ -7,20 +7,16 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 📁 Création automatique du dossier logs
 const logDir = path.join(__dirname, "../../logs");
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir, { recursive: true });
 }
 
-// 🧾 Définition du fichier access.log
 const accessLogPath = path.join(logDir, "access.log");
 const logStream = fs.createWriteStream(accessLogPath, { flags: "a" });
 
-// 🔹 Middleware Morgan pour les requêtes HTTP
 export const httpLogger = morgan("combined", { stream: logStream });
 
-// 🔹 Fonctions utilitaires simples pour les logs console
 export const info = (msg) =>
   console.log(`\x1b[32m[INFO]\x1b[0m ${new Date().toISOString()} - ${msg}`);
 
