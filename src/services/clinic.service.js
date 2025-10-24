@@ -3,7 +3,6 @@ import { NotFoundError, BadRequestError, ConflictError } from "../core/AppError.
 import { uploadToMinio } from "./minio.service.js";
 
 export const createClinic = async (clinicData, logo) => {
-    console.log("Creating clinic with data:", clinicData);
   const newClinic = new Clinic(clinicData);
   //ckeck if clinic with same name exists or licenseNumber
   const existingClinic = await Clinic.findOne({
@@ -23,8 +22,6 @@ export const createClinic = async (clinicData, logo) => {
     });
     savedClinic.logo = logoUrl;
   }
-  //save clinic with logo url
-  console.log(savedClinic)
   await savedClinic.save();
   return savedClinic;
 };

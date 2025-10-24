@@ -16,6 +16,9 @@ export const authMiddleware = async (req, res, next) => {
   }
   try {
     const decoded = verifyToken(token);
+    if (!decoded) {
+      return res.status(401).json({ message: "Unauthorized: Invalid token" });
+    }
     req.user = decoded;
     next();
   } catch (err) {
