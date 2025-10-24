@@ -4,6 +4,7 @@ const AppointmentSchema = new mongoose.Schema({
   patientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient', required: true },
   doctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
   clinicId: { type: mongoose.Schema.Types.ObjectId, ref: 'Clinic' },
+  nurseId: { type: mongoose.Schema.Types.ObjectId, ref: "Nurse" },
   date: { type: Date, required: true },
   reason: String,
   status: { 

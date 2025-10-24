@@ -1,13 +1,12 @@
 import mongoose from "mongoose";
 
-const doctorSchema = new mongoose.Schema({
+const nurseSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  specialty: { type: String, required: true },
-  licenseNumber: String,
-  consultationDuration: { type: Number, default: 30 }, // minutes
+  department: String,
+  shiftType: { type: String, enum: ["day", "night", "mixed"], default: "day" },
   availability: [
     {
-      dayOfWeek: { type: String, enum: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] },
+      dayOfWeek: String,
       startTime: String,
       endTime: String,
       breaks: [{ start: String, end: String }]
@@ -16,4 +15,4 @@ const doctorSchema = new mongoose.Schema({
   vacations: [{ startDate: Date, endDate: Date, reason: String }],
 }, { timestamps: true });
 
-export default mongoose.model("Doctor", doctorSchema);
+export default mongoose.model("Nurse", nurseSchema);
