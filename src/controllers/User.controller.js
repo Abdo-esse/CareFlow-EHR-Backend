@@ -17,7 +17,6 @@ export const createUserController = async (req, res, next) => {
     // 1️⃣ Créer l’utilisateur
     createdUser = await createUser(userBody);
     if (!createdUser) throw new BadRequestError("Erreur lors de la création de l'utilisateur");
-    console.log("Utilisateur créé avec succès :", createdUser);
 
     try {
       // 2️⃣ Créer l’entité selon le rôle

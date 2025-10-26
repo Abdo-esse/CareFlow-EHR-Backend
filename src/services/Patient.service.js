@@ -6,8 +6,6 @@ import { AppError, BadRequestError, NotFoundError } from "../core/AppError.js";
 // create patient service
 export const createPatient = async (patientData) => {
   try {
-    // Vérifier si un patient existe déjà pour cet utilisateur
-    console.log("Vérification de l'existence du patient pour l'utilisateur :", patientData.userId);
     const existingPatient = await Patient.findOne({ userId: patientData.userId });
     if (existingPatient) {
       throw new NotFoundError("Un patient existe déjà pour cet utilisateur");

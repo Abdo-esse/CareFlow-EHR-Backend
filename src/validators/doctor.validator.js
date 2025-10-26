@@ -1,6 +1,15 @@
 import Joi from "joi";
 import mongoose from "mongoose";
 
+
+// Fonction pour valider ObjectId
+const objectId = () => Joi.string().custom((value, helpers) => {
+  if (!mongoose.Types.ObjectId.isValid(value)) {
+    return helpers.error("any.invalid");
+  }
+  return value;
+}, "ObjectId Validation");
+
 export const doctorValidationSchema = Joi.object({
   userId: Joi.string()
     .required()
@@ -11,7 +20,7 @@ export const doctorValidationSchema = Joi.object({
     })
     .messages({ "any.invalid": "userId doit être un ObjectId valide." }),
 
-  specialty: Joi.string().min(2).required(),
+  specialtyId: objectId().required(),
 
   licenseNumber: Joi.string().allow("", null),
 

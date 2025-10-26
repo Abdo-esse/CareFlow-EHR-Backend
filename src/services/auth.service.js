@@ -9,7 +9,7 @@ import { revokeToken } from "./redis.service.js";
 
 export const login = async (email, password) => {
     try {
-        const user = await User.findOne({ email }); 
+        const user = await User.findOne({ email }).populate('roleId'); 
         if (!user) {
             throw new NotFoundError("User not found");
         }
@@ -18,7 +18,7 @@ export const login = async (email, password) => {
             throw new AppError("Invalid credentials", 401);
         }
         //return user without password
-        user.password = undefined;
+        delete user.password;
         return user;
     } catch (error) {   
         if (error instanceof AppError) throw error;
@@ -29,7 +29,7 @@ export const login = async (email, password) => {
 export const refreshToken= async (token) => {
     try {
         const decoded = await verifyRefreshToken(token);
-        const user = await User.findById(decoded.id);
+        const user = await User.findById(decoded.id).populate('roleId');
         if (!user) {
             throw new NotFoundError("User not found");
         }

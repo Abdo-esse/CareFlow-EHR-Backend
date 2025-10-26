@@ -11,7 +11,8 @@
     "test": "mocha --recursive tests",
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "seed:roles-permissions": "node src/scripts/rolesAndPermissions.seed.js"
+    "seed:roles-permissions": "node src/scripts/rolesAndPermissions.seed.js",
+    "seed:specialties": "node src/scripts/seedSpecialties.js"
   },
   "repository": {
     "type": "git",

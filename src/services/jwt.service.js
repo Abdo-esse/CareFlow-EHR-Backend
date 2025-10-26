@@ -17,6 +17,7 @@ export const generateAccessToken = (user) => {
   const payload = {
     sub: user._id,
     email: user.email,
+    role: user.roleId?.name || 'Unknown',
     jti, 
   };
 
