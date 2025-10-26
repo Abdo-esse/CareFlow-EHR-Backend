@@ -15,7 +15,7 @@ export const getUser = async (id) => {
     }
 };
 
-export const createUser = async (userData) => {
+export const createUser = async (userData, session=null) => {
   try {
     const existingUser = await User.findOne({
       $or: [ { email: userData.email }, { phone: userData.phone }]
@@ -34,7 +34,7 @@ export const createUser = async (userData) => {
     }
     newUser.password = await hashPassword(userData.password);
 
-    await newUser.save();
+    await newUser.save({ session });
     // return user with role not roleId
     const userResponse = newUser.toObject();
     delete userResponse.password;

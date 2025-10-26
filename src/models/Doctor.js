@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 
 const doctorSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  specialty: { type: String, required: true },
+  specialtyId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Specialty', 
+    required: true 
+  },
   licenseNumber: String,
   consultationDuration: { type: Number, default: 30 }, // minutes
   availability: [

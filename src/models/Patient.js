@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const PatientSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   dateOfBirth: Date,
-  gender: { type: String, enum: ['male', 'female', 'other'] },
+  gender: { type: String, enum: ['male', 'female'] },
   bloodType: { type: String, enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] },
   allergies: [String],
   chronicDiseases: [String],
