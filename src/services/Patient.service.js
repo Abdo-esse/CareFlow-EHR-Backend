@@ -3,7 +3,7 @@ import { AppError, BadRequestError, NotFoundError } from "../core/AppError.js";
 
 
 
-// create patient service
+
 export const createPatient = async (patientData) => {
   try {
     const existingPatient = await Patient.findOne({ userId: patientData.userId });

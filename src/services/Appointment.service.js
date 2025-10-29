@@ -22,11 +22,11 @@ export const createAppointment = async (appointmentData) => {
   try {
     const { doctorId, patientId, clinicId, specialtyId, startTime, endTime } = appointmentData;
 
-    // 1️⃣ Vérifier que le médecin existe
+    // Vérifier que le médecin existe
     const doctor = await Doctor.findById(doctorId);
     if (!doctor) throw new NotFoundError("Médecin non trouvé");
 
-    // 2️⃣ Vérifier que le médecin a la spécialité demandée
+    // Vérifier que le médecin a la spécialité demandée
     if (doctor.specialtyId.toString() !== specialtyId) {
       throw new BadRequestError("Le médecin n'a pas cette spécialité");
     }
@@ -35,13 +35,13 @@ export const createAppointment = async (appointmentData) => {
     const appointmentEnd = new Date(endTime);
     const dayOfWeek = dayNames[appointmentStart.getUTCDay()];
 
-    // 3️⃣ Vérifier les vacations
+    // Vérifier les vacations
     const onVacation = doctor.vacations.some(v => 
       appointmentStart >= v.startDate && appointmentStart <= v.endDate
     );
     if (onVacation) throw new ConflictError("Le médecin est en vacances à cette date");
 
-    // 4️⃣ Vérifier la disponibilité du médecin
+    // Vérifier la disponibilité du médecin
     const doctorAvailability = doctor.availability.find(avail => avail.dayOfWeek === dayOfWeek);
     if (!doctorAvailability) throw new ConflictError("Le médecin n'est pas disponible ce jour-là");
 
@@ -60,7 +60,7 @@ export const createAppointment = async (appointmentData) => {
       }
     }
 
-    // 5️⃣ Vérifier conflits pour le docteur
+    // Vérifier conflits pour le docteur
     const existingDoctorAppt = await Appointment.findOne({
       doctorId,
       clinicId,
@@ -72,7 +72,7 @@ export const createAppointment = async (appointmentData) => {
     });
     if (existingDoctorAppt) throw new ConflictError("Un rendez-vous existe déjà pour ce médecin à cette date et heure");
 
-    // 6️⃣ Vérifier conflits pour le patient
+    // Vérifier conflits pour le patient
     const existingPatientAppt = await Appointment.findOne({
       patientId,
       $or: [

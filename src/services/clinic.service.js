@@ -4,7 +4,6 @@ import { uploadToMinio } from "./minio.service.js";
 
 export const createClinic = async (clinicData, logo) => {
   const newClinic = new Clinic(clinicData);
-  //ckeck if clinic with same name exists or licenseNumber
   const existingClinic = await Clinic.findOne({
     $or: [{ name: clinicData.name }, { licenseNumber: clinicData.licenseNumber }],
   });

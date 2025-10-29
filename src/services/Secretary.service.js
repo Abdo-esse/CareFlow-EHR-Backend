@@ -5,7 +5,6 @@ import { AppError, BadRequestError, NotFoundError } from "../core/AppError.js";
 // create secretary service
 export const createSecretary = async (secretaryData) => {
   try {
-    // Vérifier si un secrétaire existe déjà pour cet utilisateur
     const existingSecretary = await Secretary.findOne({ userId: secretaryData.userId });
     if (existingSecretary) {
       throw new NotFoundError("Un secrétaire existe déjà pour cet utilisateur");

@@ -8,8 +8,6 @@ import { uploadFile } from "../middleware/upload.middleware.js";
 const router = express.Router();
 router.post("/", authMiddleware,uploadFile.single("logo"),  validate(clinicCreateSchema), createClinicController);
 // router.get("/:id", authMiddleware, getClinicController);
-// router.put("/:id", authMiddleware, updateClinicController);
-// router.delete("/:id", authMiddleware, deleteClinicController);
-// router.get("/", authMiddleware, getPaginatedClinicsController);
+
 
 export default router;

@@ -14,6 +14,13 @@ const ConsultationSchema = new mongoose.Schema({
   diagnosis: String,
   procedures: [String],
   notes: String,
+  attachments: [
+    {
+      fileName: String,
+      fileType: String, 
+      fileUrl: String   
+    }
+  ],
 }, { timestamps: true });
 
 export default mongoose.model("Consultation", ConsultationSchema);

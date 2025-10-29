@@ -6,11 +6,11 @@ const storage = multer.memoryStorage();
 export const uploadFile = multer({
   storage,
   fileFilter: (req, file, cb) => {
-    const allowed = /jpeg|jpg|png|webp/;
+    const allowed = /jpeg|jpg|png|webp|pdf/;
     const ext = allowed.test(path.extname(file.originalname).toLowerCase());
     const mime = allowed.test(file.mimetype);
     if (ext && mime) cb(null, true);
-    else cb(new Error("Seules les images sont autorisées."));
+    else cb(new Error("Seules les images et PDF sont autorisées."));
   },
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
 });
