@@ -11,7 +11,8 @@ export const getUser = async (id) => {
         }
         return user;
     } catch (error) {
-        throw new Error("Server error");
+        if (error instanceof AppError) throw error;
+        throw new BadRequestError(error.message);
     }
 };
 

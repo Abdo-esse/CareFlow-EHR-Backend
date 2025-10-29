@@ -83,7 +83,7 @@ export const createAppointment = async (appointmentData) => {
     });
     if (existingPatientAppt) throw new ConflictError("Le patient a déjà un rendez-vous à cette date et heure");
 
-    // 7️⃣ Créer le rendez-vous
+    // Créer le rendez-vous
     const newAppointment = await Appointment.create(appointmentData);
 
     return newAppointment;
@@ -92,4 +92,23 @@ export const createAppointment = async (appointmentData) => {
     if (error instanceof AppError) throw error;
     throw new BadRequestError(error.message);
   }
+};
+
+export const getAppointmentByStatus = async (status, clinicId, filter = {}) => {
+  try {
+    
+    const query = { status };
+    if (clinicId) query.clinicId = clinicId;
+    Object.assign(query, filter); 
+    const appointments = await Appointment.find(query);
+    if (!appointments.length) {
+      throw new NotFoundError("Aucun rendez-vous trouvé avec ce statut");
+    }
+    return appointments;
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+    throw new BadRequestError(error.message);
+    
+  }
+  
 };

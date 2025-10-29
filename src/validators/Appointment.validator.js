@@ -16,11 +16,17 @@ export const appointmentValidationSchema = Joi.object({
   clinicId: objectId().required(),
   nurseId: objectId().optional(),
   specialtyId: objectId().required(),
-  startTime: Joi.date().iso().required(), // ISO 8601 string ou Date
-  endTime: Joi.date().iso().required().greater(Joi.ref('startTime')), // endTime > startTime
-  reason: Joi.string().trim().max(500).optional(), // limite facultative de caractères
+  startTime: Joi.date().iso().required(),
+  endTime: Joi.date().iso().required().greater(Joi.ref('startTime')), 
+  reason: Joi.string().trim().max(500).optional(), 
   status: Joi.string()
     .valid('scheduled', 'completed', 'cancelled', 'no_show')
     .optional(),
   notes: Joi.string().trim().max(1000).optional()
+});
+
+// Schéma Joi pour getter les rendez-vous par statut
+export const getAppointmentsByStatusSchema = Joi.object({
+  status: Joi.string().valid('scheduled', 'completed', 'cancelled', 'no_show').required(),
+  specialtyId: objectId().optional()
 });

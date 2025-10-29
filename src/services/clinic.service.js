@@ -14,13 +14,27 @@ export const createClinic = async (clinicData, logo) => {
     const savedClinic = await newClinic.save();
   // upload file to minio if logo is provided
   if (logo) {
-    const logoUrl = await uploadToMinio({
+    const uploadResult = await uploadToMinio({
       file: logo,
       clinicId: newClinic._id,
       folder: "logos",
     });
-    savedClinic.logo = logoUrl;
+    savedClinic.logo = uploadResult.fileUrl;
   }
   await savedClinic.save();
   return savedClinic;
+};
+
+
+export const getClinic = async (clinicId) => {
+   try {
+        const clinic = await Clinic.findById(clinicId);
+        if (!clinic) {
+            throw new NotFoundError("Clinique introuvable.");
+        }
+        return clinic;
+    } catch (error) {
+        if (error instanceof AppError) throw error;
+        throw new BadRequestError(error.message);
+    }
 };

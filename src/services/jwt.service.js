@@ -18,6 +18,7 @@ export const generateAccessToken = (user) => {
     sub: user._id,
     email: user.email,
     role: user.roleId?.name || 'Unknown',
+    clinicId: user.clinicId,
     jti, 
   };
 

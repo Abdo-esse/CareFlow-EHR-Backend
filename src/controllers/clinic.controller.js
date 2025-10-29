@@ -1,6 +1,6 @@
 
 import logger from '../utils/logger.js';
-import { createClinic } from './../services/clinic.service.js';
+import { createClinic, getClinic } from './../services/clinic.service.js';
 
 
 export const createClinicController = async (req, res, next) => {   
@@ -17,4 +17,18 @@ export const createClinicController = async (req, res, next) => {
         next(error);
     }   
 };
+
+export const getClinicController = async (req, res, next) => {
+    try {
+        const clinicId = req.params.id;
+        const clinic = await getClinic(clinicId);
+        return res.status(200).json({
+            message: "Clinique récupérée avec succès",
+            clinic
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 
