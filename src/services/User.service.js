@@ -70,20 +70,22 @@ export const deleteUser = async (id) => {
     }
 };
 
-export const getPaginatedUsers = async (page, limit) => {
-    try {
-        const users = await User.find()
-            .skip((page - 1) * limit)
-            .limit(limit);
-        const totalUsers = await User.countDocuments();
-        return {
-            users,
-            totalPages: Math.ceil(totalUsers / limit),
-            currentPage: page
-        };
-    } catch (error) {
-        throw new Error("Server error");
-    }
+export const getPaginatedUsers = async (page = 1, limit = 10, clinicId = null) => {
+  try {
+    const filter = clinicId ? { clinicId } : {};
+    const users = await User.find(filter)
+      .skip((page - 1) * limit)
+      .limit(limit);
+    const totalUsers = await User.countDocuments(filter);
+
+    return {
+      users,
+      totalPages: Math.ceil(totalUsers / limit),
+      currentPage: page
+    };
+  } catch(error) {
+    throw new BadRequestError("Erreur serveur lors de la récupération des utilisateurs");
+  }
 };
 
 export const findUserByEmail = async (email) => {

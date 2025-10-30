@@ -38,3 +38,38 @@ export const getClinic = async (clinicId) => {
         throw new BadRequestError(error.message);
     }
 };
+
+
+export const deleteClinic = async (clinicId) => {
+  try {
+    const deletedClinic = await Clinic.findByIdAndDelete(clinicId);
+    if (!deletedClinic) {
+      throw new NotFoundError("Clinique introuvable.");
+    }
+    return deletedClinic;
+  } catch (error) {
+    if (error instanceof NotFoundError) throw error;
+    throw new BadRequestError(error.message);
+  }
+};
+
+export const getAllClinics = async (page = 1, limit = 10) => {
+  try {
+    const skip = (page - 1) * limit;
+
+    const clinics = await Clinic.find()
+      .skip(skip)
+      .limit(limit);
+
+    const totalClinics = await Clinic.countDocuments();
+
+    return {
+      clinics,
+      totalPages: Math.ceil(totalClinics / limit),
+      currentPage: page,
+      totalClinics,
+    };
+  } catch (error) {
+    throw new BadRequestError("Erreur serveur lors de la récupération des cliniques.");
+  }
+};

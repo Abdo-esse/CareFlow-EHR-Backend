@@ -15,6 +15,7 @@ import routes from './routes/index.js';
 import errorHandler from './middleware/error.middleware.js';
 import logger from './utils/logger.js';
 import { httpLogger } from './utils/httpLogger.js';
+import { setupSwagger } from "./config/swagger.js";
 
 const app = express();
 
@@ -54,6 +55,9 @@ app.get('/api/v1/health', (req, res) => {
 // === Main API routes ===
 app.use('/api/v1', routes);
 
+// === Swagger Setup ===
+setupSwagger(app);
+
 // === 404 Handler ===
 app.use((req, res, next) => {
   logger.warn(`Route not found: ${req.originalUrl}`);
@@ -62,6 +66,7 @@ app.use((req, res, next) => {
 
 // === Global Error Middleware ===
 app.use(errorHandler);
+
 
 // === Start Server ===
 const PORT = process.env.PORT || 3000;
